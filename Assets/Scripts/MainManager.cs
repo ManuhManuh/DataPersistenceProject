@@ -13,11 +13,12 @@ public class MainManager : MonoBehaviour
 
     public Text ScoreText;
     public Text BestScoreText;
+    public Text SessionBestScoreText;
     public GameObject GameOverText;
     
     private bool m_Started = false;
     private int m_Points;
-    
+
     private bool m_GameOver = false;
 
     // Start is called before the first frame update
@@ -25,6 +26,7 @@ public class MainManager : MonoBehaviour
     {
         // Update score and player obtained from menu
         BestScoreText.text = ($"Best Score ({MenuManager.Instance.highScorePlayer}): {MenuManager.Instance.highScore}");
+        SessionBestScoreText.text = $"Session High Score: {MenuManager.Instance.sessionHighScore}";
 
         const float step = 0.6f;
         int perLine = Mathf.FloorToInt(4.0f / step);
@@ -76,6 +78,11 @@ public class MainManager : MonoBehaviour
     {
         m_GameOver = true;
         GameOverText.SetActive(true);
+        if(m_Points > MenuManager.Instance.sessionHighScore)
+        {
+            MenuManager.Instance.sessionHighScore = m_Points;
+        }
+
         if (m_Points > MenuManager.Instance.highScore)
         {
             // Save the new high score
@@ -86,6 +93,15 @@ public class MainManager : MonoBehaviour
             MenuManager.Instance.highScorePlayer = MenuManager.Instance.currentPlayer;
         }
         
+    }
+
+    public void OnQuit()
+    {
+#if UNITY_EDITOR
+        UnityEditor.EditorApplication.isPlaying = false;
+#else
+        Application.Quit
+#endif
     }
 
     

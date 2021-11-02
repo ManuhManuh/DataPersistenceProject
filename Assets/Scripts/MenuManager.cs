@@ -15,7 +15,7 @@ public class MenuManager : MonoBehaviour
 
     public int highScore;
     public string highScorePlayer;
-
+    public int sessionHighScore;
     public string currentPlayer;
 
     private SaveData highScoreRecord;
@@ -41,19 +41,24 @@ public class MenuManager : MonoBehaviour
 
     public void OnStartGame()
     {
-        // Load the saved high score
-        string path = Application.persistentDataPath + "/savefile.json";
-
-        if (File.Exists(path))
+        // Make sure the user entered a name
+        if (nameInput.text.Length > 0)
         {
-            string json = File.ReadAllText(path);
-            highScoreRecord = JsonUtility.FromJson<SaveData>(json);
-            highScore = highScoreRecord.savedHighScore;
-            highScorePlayer = highScoreRecord.savedHighScorePlayer;
-        }
-        currentPlayer = nameInput.text;
-        SceneManager.LoadScene("main");
+            // Load the saved high score
+            string path = Application.persistentDataPath + "/savefile.json";
 
+            if (File.Exists(path))
+            {
+                string json = File.ReadAllText(path);
+                highScoreRecord = JsonUtility.FromJson<SaveData>(json);
+                highScore = highScoreRecord.savedHighScore;
+                highScorePlayer = highScoreRecord.savedHighScorePlayer;
+            }
+            currentPlayer = nameInput.text;
+            sessionHighScore = 0;
+            SceneManager.LoadScene("main");
+        }
+        
     }
 
     public void SaveNewHighScore(int score)
